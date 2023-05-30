@@ -1,4 +1,6 @@
-require('bufferline').setup {}
+require('bufferline').setup { options = {
+  buffer_close_icon = ""
+} }
 require('gitsigns').setup {}
 require('Comment').setup {}
 require('neoscroll').setup {}

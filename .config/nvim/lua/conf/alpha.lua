@@ -53,7 +53,7 @@ dashboard.section.buttons.val = {
   dashboard.button("e", "  New file", ":ene | startinsert <CR>", {}),
   dashboard.button("f", "  Find file", ":Telescope find_files<CR>", {}),
   dashboard.button("g", "  Find word", ":Telescope live_grep<CR>", {}),
-  dashboard.button("q", "  Quit NVIM", ":qa<CR>", {}),
+  dashboard.button("q", "  Quit NVIM", ":qa<CR>", {}),
 }
 
 dashboard.section.footer.val = table.concat(fortune(), '\n')
@@ -61,7 +61,7 @@ dashboard.section.footer.val = table.concat(fortune(), '\n')
 alpha.setup({
   layout = {
     { type = "padding", val = 14 },
-    { type = "group", val = colorize_header() },
+    { type = "group",   val = colorize_header() },
     { type = "padding", val = 8 },
     dashboard.section.buttons,
     dashboard.section.footer,

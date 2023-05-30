@@ -35,7 +35,7 @@ return require('packer').startup(function(use)
   }
 
   -- show open file tabs
-  use { 'akinsho/bufferline.nvim', tag = "v2.*", requires = 'nvim-tree/nvim-web-devicons' }
+  use { 'akinsho/bufferline.nvim', tag = "*", requires = 'nvim-tree/nvim-web-devicons' }
 
   -- warnings for wrong syntax
   use {
