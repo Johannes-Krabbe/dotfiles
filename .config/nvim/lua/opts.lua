@@ -46,9 +46,9 @@ g.indentLine_fileTypeExclude = { 'dashboard' }
 
 -- set gutter icons
 local signs = {
-  Error = "",
-  Warn = " ",
-  Hint = "",
+  Error = " ",
+  Warn = " ",
+  Hint = " ",
   Info = " "
 }
 

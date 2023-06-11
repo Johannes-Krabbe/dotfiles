@@ -9,7 +9,12 @@ vim.api.nvim_create_autocmd('BufWritePre', {
     end
 
     vim.cmd("mkview")
-    vim.lsp.buf.format()
+    vim.lsp.buf.format {
+      filter = function(client)
+        return
+            client.name ~= "tsserver"
+      end
+    }
     vim.cmd("silent! loadview")
   end,
   group = format_group,
