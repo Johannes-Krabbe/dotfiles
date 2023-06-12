@@ -4,6 +4,7 @@ local b = nls.builtins;
 nls.setup({
   b.formatting.gofmt,
   b.diagnostics.golangci_lint,
+  b.formatting.rustfmt,
   sources = {
     b.formatting.prettierd,
     b.diagnostics.eslint.with({
