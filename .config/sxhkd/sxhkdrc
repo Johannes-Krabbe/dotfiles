@@ -4,11 +4,11 @@
 
 # terminal emulator
 super + Return
-	kitty
+  kitty
 
 # program launcher
 super + @space
-	dmenu_run
+	rofi -show run
 
 # make sxhkd reload its configuration files:
 super + Escape
@@ -119,3 +119,4 @@ super + alt + shift + {h,j,k,l}
 # move a floating window
 super + {Left,Down,Up,Right}
 	bspc node -v {-20 0,0 20,0 -20,20 0}
+
