@@ -7,128 +7,173 @@ return require('packer').startup(function(use)
   -- Packer can manage itself
   use 'wbthomason/packer.nvim'
 
-  -- file browser
+  -- ====================
+  -- AESTHETICS
+  -- ====================
+
+  -- Bottom info line
+  use {
+    'nvim-lualine/lualine.nvim',
+    requires = { 'kyazdani42/nvim-web-devicons', opt = true }
+  }
+
+  -- Show open file tabs
+  use { 'akinsho/bufferline.nvim', tag = "*", requires = 'kyazdani42/nvim-web-devicons' }
+
+  -- File icons
+  use 'kyazdani42/nvim-web-devicons'
+
+  -- Some color scheme other then default
+  use("arcticicestudio/nord-vim")
+
+  -- Dracula theme
+  use { 'Mofiqul/dracula.nvim' }
+
+  -- ====================
+  -- FILE MANAGEMENT
+  -- ====================
+
+  -- File browser/ explorer
+  use { 'kyazdani42/nvim-tree.lua', requires = { 'kyazdani42/nvim-web-devicons' } }
+
+  -- File browser
   use "nvim-telescope/telescope-file-browser.nvim"
   use {
     'nvim-telescope/telescope.nvim', requires = { 'nvim-lua/plenary.nvim' }
   }
 
-  -- syntax highlighting (except nameserver things)
-  use { 'nvim-treesitter/nvim-treesitter', run = ':TSUpdate' }
-
-  -- installs language server
-  use 'williamboman/nvim-lsp-installer'
-
-  -- configs language server
-  use 'neovim/nvim-lspconfig'
-
-  -- for searching files/ folders
+  -- For searching files/ folders
   use { 'nvim-telescope/telescope-fzf-native.nvim', run = 'make' }
 
-  -- leaderkey hints
-  use "folke/which-key.nvim"
-
-  -- bottom info line
-  use {
-    'nvim-lualine/lualine.nvim',
-    requires = { 'nvim-tree/nvim-web-devicons', opt = true }
-  }
-
-  -- show open file tabs
-  use { 'akinsho/bufferline.nvim', tag = "*", requires = 'nvim-tree/nvim-web-devicons' }
-
-  -- warnings for wrong syntax
-  use {
-    "folke/trouble.nvim",
-    requires = "nvim-tree/nvim-web-devicons",
-  }
-
-  -- git see changes on the side
-  use 'lewis6991/gitsigns.nvim'
-
-  -- gcc commenting
-  use 'numToStr/Comment.nvim'
-
-  -- restore sessions after closing
+  -- Restore sessions after closing
   use 'TC72/auto-session'
 
-  -- clean scroll animation
-  use 'karb94/neoscroll.nvim'
-
-  -- hello I am neovim (greeter)
-  use { 'goolord/alpha-nvim', requires = { 'nvim-tree/nvim-web-devicons' } }
-
-  -- autocompletion
-  use { 'hrsh7th/nvim-cmp', requires = { 'saadparwaiz1/cmp_luasnip', 'hrsh7th/cmp-nvim-lsp' } }
-
-  -- github copilot
-  use 'github/copilot.vim'
-
-  -- code snippets
-  use 'L3MON4D3/LuaSnip'
-
-  -- icons in autocompletion
-  use 'onsails/lspkind.nvim'
-
-  -- loding indicator (mainly for language server)
-  use 'j-hui/fidget.nvim'
-
-  -- open terminal in editor
-  use { "akinsho/toggleterm.nvim", tag = 'v2.*' }
-
-  -- for prisma orm
-  use("prisma/vim-prisma")
-
-
-  -- in text color preview
-  use 'norcalli/nvim-colorizer.lua'
-
-  -- config for sxhkd (for linux)
-  -- use 'baskerville/vim-sxhkdrc'
-
-  -- language server for code actions -> formatter collection
-  use { 'jose-elias-alvarez/null-ls.nvim', requires = { 'nvim-lua/plenary.nvim' } }
-
-  -- file browser/ explorer
-  use { 'nvim-tree/nvim-tree.lua', requires = { 'nvim-tree/nvim-web-devicons' } }
-
-  -- file icons
-  use 'nvim-tree/nvim-web-devicons'
-
-  -- project manager
+  -- Project manager
   use 'ahmedkhalf/project.nvim'
 
-  -- md preview
+  -- ====================
+  -- NAVIGATION AND UX
+  -- ====================
+
+  -- Leaderkey hints
+  use "folke/which-key.nvim"
+
+  -- Clean scroll animation
+  use 'karb94/neoscroll.nvim'
+
+  -- Hello I am neovim (greeter)
+  use { 'goolord/alpha-nvim', requires = { 'kyazdani42/nvim-web-devicons' } }
+
+  -- Open terminal in editor
+  use { "akinsho/toggleterm.nvim", tag = 'v2.*' }
+
+  -- Highlighting of hovered word
+  use 'RRethy/vim-illuminate'
+
+  -- ====================
+  -- LANGUAGE SUPPORT
+  -- ====================
+
+  -- Syntax highlighting (except nameserver things)
+  use { 'nvim-treesitter/nvim-treesitter', run = ':TSUpdate' }
+
+  -- Installs language server
+  use 'williamboman/nvim-lsp-installer'
+
+  -- Configs language server
+  use 'neovim/nvim-lspconfig'
+
+  -- Language server for code actions -> formatter collection
+  use { 'jose-elias-alvarez/null-ls.nvim', requires = { 'nvim-lua/plenary.nvim' } }
+
+  -- Code actions
+  use { "glepnir/lspsaga.nvim", requires = { { "kyazdani42/nvim-web-devicons" }, { "nvim-treesitter/nvim-treesitter" } }
+  }
+
+  -- Code actions in a window
+  use { 'weilbith/nvim-code-action-menu', cmd = 'CodeActionMenu' }
+
+  -- Adds extra functionality over rust analyzer
+  use("simrat39/rust-tools.nvim")
+
+  -- For prisma orm
+  use("prisma/vim-prisma")
+
+  -- ====================
+  -- AUTOCOMPLETION AND SNIPPETS
+  -- ====================
+
+  -- Autocompletion framework
+  use { 'hrsh7th/nvim-cmp', requires = { 'hrsh7th/cmp-nvim-lsp', 'hrsh7th/cmp-vsnip', 'hrsh7th/cmp-path', 'hrsh7th/cmp-buffer' } }
+
+  -- Snippet engine
+  use 'hrsh7th/vim-vsnip'
+
+  -- Code snippets
+  use 'L3MON4D3/LuaSnip'
+
+  -- Icons in autocompletion
+  use 'onsails/lspkind.nvim'
+
+  -- Github copilot
+  use 'github/copilot.vim'
+
+  -- ====================
+  -- DEBUGGING AND ERROR HANDLING
+  -- ====================
+
+  -- Warnings for wrong syntax
+  use {
+    "folke/trouble.nvim",
+    requires = "kyazdani42/nvim-web-devicons",
+  }
+
+  -- Color for warnings
+  use 'folke/lsp-colors.nvim'
+
+  -- Debug adaper protocol
+  -- use 'mfussenegger/nvim-dap'
+
+  -- ====================
+  -- GIT AND VERSION CONTROL
+  -- ====================
+
+  -- Git see changes on the side
+  use 'lewis6991/gitsigns.nvim'
+
+  -- ====================
+  -- UTILITY PLUGINS
+  -- ====================
+
+  -- Gcc commenting
+  use 'numToStr/Comment.nvim'
+
+  -- In text color preview
+  use 'norcalli/nvim-colorizer.lua'
+
+  -- Loding indicator (mainly for language server)
+  use {
+    "j-hui/fidget.nvim",
+    config = function()
+      require("fidget").setup()
+    end
+  }
+
+  -- Md preview
   use { 'iamcco/markdown-preview.nvim', run = 'cd app && yarn install' }
+
+  -- Config for sxhkd (for linux)
+  -- use 'baskerville/vim-sxhkdrc'
+
+  -- Flutter
+  -- use { 'akinsho/flutter-tools.nvim', requires = 'nvim-lua/plenary.nvim' }
+
+  -- Svelte
+  -- use { 'evanleck/vim-svelte' }
+
+  -- Color picker
+  -- use { "ziontee113/color-picker.nvim" }
 
   -- C#
   -- use { 'OmniSharp/omnisharp-vim' }
-
-  -- code actions in a window
-  use { 'weilbith/nvim-code-action-menu', cmd = 'CodeActionMenu' }
-
-  -- color for warnings
-  use 'folke/lsp-colors.nvim'
-
-  -- highlighting of hovered word
-  use 'RRethy/vim-illuminate'
-
-  -- debug adaper protocol
-  -- use 'mfussenegger/nvim-dap'
-
-  -- flutter
-  -- use { 'akinsho/flutter-tools.nvim', requires = 'nvim-lua/plenary.nvim' }
-
-  -- svelte
-  -- use { 'evanleck/vim-svelte' }
-
-  -- color picker
-  -- use { "ziontee113/color-picker.nvim" }
-
-  -- dracula theme
-  use { 'Mofiqul/dracula.nvim' }
-
-  -- code actions
-  use { "glepnir/lspsaga.nvim", requires = { { "nvim-tree/nvim-web-devicons" }, { "nvim-treesitter/nvim-treesitter" } }
-  }
 end)
