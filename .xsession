@@ -1,3 +1,1 @@
-xrandr --output DP-1 --off --output DP-2 --mode 1920x1080 --pos 320x0 --rotate normal --output DP-3 --mode 2560x1440 --pos 0x1080 --rotate normal --output HDMI-1 --mode 3840x2160 --pos 2560x1080 --rotate normal
-
-xrandr --output HDMI-1 --scale 0.6666x0.6666
+xrandr --output DP-1 --off --output DP-2 --mode 1920x1080 --pos 320x0 --rotate normal --output DP-3 --mode 2560x1440 --pos 0x1080 --rotate normal --output HDMI-1 --mode 2560x1440 --pos 2560x1080 --rotate normal
