@@ -3,18 +3,13 @@
 xsetroot -cursor_name left_ptr
 sxhkd &
 
-bspc config border_width 2
-bspc config window_gap 0
-
-bspc config split_ratio 0.62
+bspc config split_ratio 0.5
 bspc config focus_follows_pointer true
 bspcconfig pointer_modifier mod1
 
-bspc config automatic_scheme spiral
-
 bspc rule -a Chromium desktop='^2'
 
-feh --bg-fill ~/Pictures/Wallpapers/kai-dahms.jpg
+feh --bg-fill ~/Pictures/Wallpapers/Rectangle.png
 picom &
 
 killall -9 polybar
@@ -24,12 +19,14 @@ bspc monitor DP-3 -n center
 bspc monitor HDMI-1 -n left
 bspc monitor DP-2 -n up
 
+bspc wm -O center left up
+
 bspc monitor center -d 1 2 3
 bspc monitor left -d 4 5 6
 bspc monitor up -d 7 8 9
 
 bspc config border_width 0
-bspc config window_gap 30
+bspc config window_gap 15
 
 bspc config normal_border_color "#33467C00"
 bspc config focused_border_color "#7AA2F7"
@@ -38,3 +35,6 @@ bspc config active_border_color "#33467C00"
 # bspc rule -a chromium desktop=4
 # bspc rule -a firefox desktop=4
 bspc rule -a Rofi state=floating border=off
+
+xset -dpms # Disables Energy Star features
+xset s off # Disables screen saver

@@ -19,10 +19,6 @@ wk.register({
     q = { "<cmd>Trouble quickfix<cr>", "Trouble Quickfix" },
     r = { "<cmd>Trouble lsp_references<cr>", "Trouble References" },
   },
-  g = {
-    name = "Git",
-    g = { "<cmd>lua Lazygit_toggle()<cr>", "LazyGit" },
-  },
 }, { prefix = "<leader>" })
 
 wk.register({

@@ -29,6 +29,9 @@ return require('packer').startup(function(use)
   -- Dracula theme
   use { 'Mofiqul/dracula.nvim' }
 
+  -- Transpenency
+  use { "xiyaowong/transparent.nvim" }
+
   -- ====================
   -- FILE MANAGEMENT
   -- ====================
@@ -94,7 +97,15 @@ return require('packer').startup(function(use)
   use { 'weilbith/nvim-code-action-menu', cmd = 'CodeActionMenu' }
 
   -- Adds extra functionality over rust analyzer
-  use("simrat39/rust-tools.nvim")
+  use {
+    'simrat39/rust-tools.nvim',
+    requires = {
+      { 'neovim/nvim-lspconfig' },
+      { 'nvim-lua/popup.nvim' },
+      { 'nvim-lua/plenary.nvim' },
+      { 'mfussenegger/nvim-dap' }
+    }
+  }
 
   -- For prisma orm
   use("prisma/vim-prisma")
@@ -104,7 +115,8 @@ return require('packer').startup(function(use)
   -- ====================
 
   -- Autocompletion framework
-  use { 'hrsh7th/nvim-cmp', requires = { 'hrsh7th/cmp-nvim-lsp', 'hrsh7th/cmp-vsnip', 'hrsh7th/cmp-path', 'hrsh7th/cmp-buffer' } }
+  use { 'hrsh7th/nvim-cmp', requires = { 'hrsh7th/cmp-nvim-lsp', 'hrsh7th/cmp-vsnip', 'hrsh7th/cmp-path',
+    'hrsh7th/cmp-buffer' } }
 
   -- Snippet engine
   use 'hrsh7th/vim-vsnip'
@@ -154,6 +166,7 @@ return require('packer').startup(function(use)
   -- Loding indicator (mainly for language server)
   use {
     "j-hui/fidget.nvim",
+    tag = 'legacy',
     config = function()
       require("fidget").setup()
     end
