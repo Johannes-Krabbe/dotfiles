@@ -45,10 +45,4 @@ wk.register({
   ['<C-j>'] = { ":wincmd j<cr>", "Jump to south pane" },
   ['<C-h>'] = { ":wincmd h<cr>", "Jump to west pane" },
   ['<C-l>'] = { ":wincmd l<cr>", "Jump to east pane" },
-  ['<C-g>'] = { "<cmd>lua Lazygit_toggle()<cr>", "LazyGit" }
 })
-
-
-wk.register({
-  ['<C-g>'] = { "<cmd>lua Lazygit_toggle()<cr>", "LazyGit" }
-}, { mode = "t" })
