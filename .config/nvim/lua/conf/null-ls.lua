@@ -25,7 +25,6 @@ nls.setup({
 
 
 -- local command_resolver = require("null-ls.helpers.command_resolver")
-
 --[[
     b.formatting.rome.with({
       condition = function(utils)
