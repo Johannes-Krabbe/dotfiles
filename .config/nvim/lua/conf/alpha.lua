@@ -30,7 +30,6 @@ end
 
 local function colorize_header()
   local lines = {}
-
   for i, chars in pairs(header) do
     local line = {
       type = "text",
