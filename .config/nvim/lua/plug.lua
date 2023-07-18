@@ -177,15 +177,6 @@ return require('packer').startup(function(use)
   -- Config for sxhkd (for linux)
   -- use 'baskerville/vim-sxhkdrc'
 
-  -- Flutter
-  -- use { 'akinsho/flutter-tools.nvim', requires = 'nvim-lua/plenary.nvim' }
-
-  -- Svelte
-  -- use { 'evanleck/vim-svelte' }
-
   -- Color picker
   -- use { "ziontee113/color-picker.nvim" }
-
-  -- C#
-  -- use { 'OmniSharp/omnisharp-vim' }
 end)
