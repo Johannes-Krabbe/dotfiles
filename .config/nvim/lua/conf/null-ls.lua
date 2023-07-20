@@ -6,7 +6,7 @@ nls.setup({
   b.diagnostics.golangci_lint,
   b.formatting.rustfmt,
   sources = {
-    b.formatting.prettierd,
+    b.formatting.prettier,
     b.diagnostics.markuplint,
     b.formatting.markuplint,
     b.diagnostics.eslint_d.with({

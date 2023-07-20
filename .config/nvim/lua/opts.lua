@@ -68,3 +68,7 @@ vim.diagnostic.config {
 
 -- session
 o.sessionoptions = "blank,buffers,curdir,folds,tabpages,winsize,winpos"
+
+-- sackik omegalul omega pepe
+o.swapfile = false
+o.undofile = true

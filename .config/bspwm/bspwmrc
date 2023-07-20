@@ -16,14 +16,14 @@ killall -9 polybar
 ~/.config/polybar/launch.sh
 
 bspc monitor DP-3 -n center
-bspc monitor HDMI-1 -n left
-bspc monitor DP-2 -n up
+bspc monitor DP-2 -n right
+bspc monitor DP-1 -n left
 
-bspc wm -O center left up
+bspc wm -O center left right
 
-bspc monitor center -d 1 2 3
-bspc monitor left -d 4 5 6
-bspc monitor up -d 7 8 9
+bspc monitor center -d 1 2 3 4
+bspc monitor left -d 5 6 7
+bspc monitor right -d 8 9 0
 
 bspc config border_width 0
 bspc config window_gap 15
