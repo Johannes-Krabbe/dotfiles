@@ -7,6 +7,9 @@ local on_attach = function(_, bufnr)
     vim.keymap.set('n', keys, func, { buffer = bufnr, desc = desc })
   end
 
+  nmap('<leader>a', ":bufdo bd!<cr>", 'close all tabs')
+
+
   nmap('<leader>lr', vim.lsp.buf.rename, 'Rename')
   nmap('<leader>la', vim.lsp.buf.code_action, 'Code Action')
   nmap('<leader>ld', require('telescope.builtin').lsp_document_symbols, 'Document Symbols')
