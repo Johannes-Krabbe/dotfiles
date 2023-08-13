@@ -24,23 +24,3 @@ nls.setup({
 
   },
 })
-
-
--- local command_resolver = require("null-ls.helpers.command_resolver")
---[[
-    b.formatting.rome.with({
-      condition = function(utils)
-        return utils.root_has_file("rome.json")
-      end,
-    }),
-
-
-    b.formatting.prettierd
-    .with({
-      condition = function(utils)
-        return not utils.root_has_file("rome.json")
-      end,
-
-    }),
-
-      ]]
