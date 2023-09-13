@@ -127,7 +127,7 @@ return require('packer').startup(function(use)
   use 'onsails/lspkind.nvim'
 
   -- Github copilot
-  use 'github/copilot.vim'
+  use 'zbirenbaum/copilot.lua'
 
   -- ====================
   -- DEBUGGING AND ERROR HANDLING

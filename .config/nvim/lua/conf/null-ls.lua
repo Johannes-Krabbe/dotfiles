@@ -7,8 +7,6 @@ nls.setup({
   b.formatting.rustfmt,
   sources = {
     b.formatting.prettierd,
-    b.diagnostics.markuplint,
-    b.formatting.markuplint,
     b.diagnostics.eslint_d.with({
       -- Set condition for eslint to run only if .eslintrc file exists in the root directory
       condition = function(utils)
