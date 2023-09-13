@@ -1,6 +1,4 @@
-require "plug"
-require "opts"
-require "keys"
-require "lang"
-require "conf"
-require "auto"
+require("config.options")
+require("config.lazy")
+
+require("utils")

@@ -1,9 +1,11 @@
-local g = vim.g
+vim.api.nvim_set_keymap('n', ' ', '<Nop>', { noremap = true, silent = true })
+vim.g.mapleader = ' '
+
 local o = vim.o
 local wo = vim.wo
 -- local cmd = vim.cmd
+-- local g = vim.g
 
-g.mapleader = " "
 
 -- prevent shifting when loading lsp gutter icons
 o.signcolumn = 'yes'
@@ -40,10 +42,6 @@ o.hidden = true
 -- cursor line
 o.cul = true
 
-
--- exclude dashboard
-g.indentLine_fileTypeExclude = { 'dashboard' }
-
 -- set gutter icons
 local signs = {
   Error = " ",
@@ -59,7 +57,7 @@ end
 
 vim.diagnostic.config {
   virtual_text = {
-    prefix = "",
+    prefix = " ",
   },
   signs = true,
   underline = true,
