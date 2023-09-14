@@ -28,7 +28,9 @@ return {
           select = false,
         },
         ["<Tab>"] = cmp.mapping(function(fallback)
-          if cmp.visible() then
+          if require("copilot.suggestion").is_visible() then
+            require("copilot.suggestion").accept()
+          elseif cmp.visible() then
             cmp.select_next_item()
           elseif require("luasnip").expand_or_jumpable() then
             vim.fn.feedkeys(vim.api.nvim_replace_termcodes("<Plug>luasnip-expand-or-jump", true, true, true), "")
@@ -70,5 +72,12 @@ return {
         })
       }
     })
+    cmp.event:on("menu_opened", function()
+      vim.b.copilot_suggestion_hidden = true
+    end)
+
+    cmp.event:on("menu_closed", function()
+      vim.b.copilot_suggestion_hidden = false
+    end)
   end,
 }

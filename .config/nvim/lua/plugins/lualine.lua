@@ -1,7 +1,7 @@
 return {
   'nvim-lualine/lualine.nvim',
   lazy = false,
-  dependencies = { 'nvim-tree/nvim-web-devicons', opt = true },
+  dependencies = { 'nvim-tree/nvim-web-devicons' },
   config = function()
     require('lualine').setup {
       options = {
@@ -9,7 +9,7 @@ return {
         section_separators = { left = '', right = '' },
         always_divide_middle = true,
         globalstatus = true,
-        theme = 'tokyonight',
+        theme = 'catppuccin-mocha',
       },
       sections = {
         lualine_c = { { 'filename', path = 1 } },

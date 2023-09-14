@@ -8,6 +8,10 @@ return {
       e = { ":NvimTreeToggle<cr>", "Explorer" },
       c = { ":bd<cr>", "Close buffer" },
       n = { ":nohl<cr>", "Clear Highlights" },
+      b = {
+        name = "Buffer",
+        e = { ":wa | %bd | e# | bd#<CR>", "Delete buffer and edit alternate file" },
+      },
       f = {
         name = "Find",
         f = { ":Telescope find_files<cr>", "Find File" },

@@ -11,17 +11,10 @@ return {
         float = {
           enable = true,
           open_win_config = {
-            border = "single",
-            col = 2,
-            row = 2,
+            border = "none",
           }
         },
         adaptive_size = true,
-        mappings = {
-          list = {
-            { key = "<ESC>", action = "close" },
-          },
-        },
       },
       filters = {
         dotfiles = false,
@@ -33,5 +26,6 @@ return {
       sync_root_with_cwd = true,
       respect_buf_cwd = true,
     }
+    vim.api.nvim_set_keymap('n', '<Esc>', ':NvimTreeClose<CR>', { noremap = true, silent = true })
   end,
 }
