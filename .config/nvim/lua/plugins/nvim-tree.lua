@@ -11,7 +11,11 @@ return {
         float = {
           enable = true,
           open_win_config = {
+            relative = "editor",
             border = "none",
+            style = "minimal",
+            row = 0,
+            col = 0,
           }
         },
         adaptive_size = true,
