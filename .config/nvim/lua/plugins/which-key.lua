@@ -5,12 +5,14 @@ return {
     local wk = require("which-key")
 
     wk.register({
-      e = { ":NvimTreeToggle<cr>", "Explorer" },
       c = { ":bd<cr>", "Close buffer" },
+      e = { ":NvimTreeToggle<cr>", "Explorer" },
       n = { ":nohl<cr>", "Clear Highlights" },
+      l = { "", "LSP" },
       b = {
         name = "Buffer",
-        e = { ":wa | %bd | e# | bd#<CR>", "Delete buffer and edit alternate file" },
+        b = { ":CloseFileBuffersExceptCurrent<cr>", "close all files exept current" },
+        e = { ":CloseFileBuffers<cr>", "close all files" },
       },
       f = {
         name = "Find",
@@ -27,16 +29,16 @@ return {
         q = { "<cmd>Trouble quickfix<cr>", "Trouble Quickfix" },
         r = { "<cmd>Trouble lsp_references<cr>", "Trouble References" },
       },
-    }, { prefix = "<leader>" })
-
-    wk.register({
-      ['[d'] = { "<cmd>lua vim.diagnostic.goto_prev()<cr>", "Previous diagnostic" },
-      [']d'] = { "<cmd>lua vim.diagnostic.goto_next()<cr>", "Next diagnostic" },
-      ['<leader>d'] = {
+      d = {
         name = "diagnostics",
         f = { "<cmd>lua vim.diagnostic.open_float()<cr>", "Float" },
         q = { "<cmd>lua vim.diagnostic.setloclist()<cr>", "Loclist" },
-      },
+        dp = { "<cmd>lua vim.diagnostic.goto_prev()<cr>", "Previous diagnostic" },
+        dn = { "<cmd>lua vim.diagnostic.goto_next()<cr>", "Next diagnostic" },
+      }
+    }, { prefix = "<leader>" })
+
+    wk.register({
       g = {
         name = "Goto",
         h = "<cmd>Lspsaga lsp_finder<cr>",
