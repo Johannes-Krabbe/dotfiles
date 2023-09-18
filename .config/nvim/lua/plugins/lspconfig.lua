@@ -64,7 +64,6 @@ return {
           vim.keymap.set('n', keys, func, { buffer = ev.buf, desc = desc })
         end
 
-        -- TODO move all to nmap
         nmap('<leader>ln', vim.lsp.buf.rename, 'Rename')
         vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, opts)
         vim.keymap.set('n', 'gd', vim.lsp.buf.definition, opts)
