@@ -13,7 +13,7 @@ o.signcolumn = 'yes'
 o.termguicolors = true
 
 -- set tab width
-local TAB_WIDTH = 2
+local TAB_WIDTH = 4
 o.tabstop = TAB_WIDTH
 o.shiftwidth = TAB_WIDTH
 o.expandtab = true
