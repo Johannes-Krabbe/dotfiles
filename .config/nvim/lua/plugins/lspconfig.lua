@@ -9,7 +9,7 @@ return {
 
     lspconfig.tsserver.setup {}
 
-    require('lspconfig').tsserver.setup {
+    lspconfig.tsserver.setup {
       capabilities = capabilities,
     }
 
@@ -17,7 +17,7 @@ return {
     table.insert(runtime_path, 'lua/?.lua')
     table.insert(runtime_path, 'lua/?/init.lua')
 
-    require('lspconfig').lua_ls.setup {
+    lspconfig.lua_ls.setup {
       capabilities = capabilities,
       settings = {
         Lua = {
@@ -33,6 +33,13 @@ return {
             checkThirdParty = false
           },
         },
+      },
+    }
+
+    lspconfig.rust_analyzer.setup {
+      -- Server-specific settings. See `:help lspconfig-setup`
+      settings = {
+        ['rust-analyzer'] = {},
       },
     }
 
