@@ -7,6 +7,9 @@ vim.api.nvim_create_autocmd('BufWritePre', {
     if vim.fn.match(filename, '\\.yaml$') > -1 then
       return
     end
+    if vim.fn.match(filename, '\\.md$') > -1 then
+      return
+    end
 
     vim.cmd("mkview")
     vim.lsp.buf.format {
