@@ -104,6 +104,7 @@ return {
                 end
 
                 nmap('<leader>ln', vim.lsp.buf.rename, 'Rename')
+                nmap('<leader>la', vim.lsp.buf.code_action, 'Code action')
                 vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, opts)
                 vim.keymap.set('n', 'gd', vim.lsp.buf.definition, opts)
                 vim.keymap.set('n', 'K', vim.lsp.buf.hover, opts)
