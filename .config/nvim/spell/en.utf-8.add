@@ -1,0 +1,13 @@
+varchar
+boolean
+sequenceId
+ASC
+dateTime
+analytics
+NPS
+typeorm
+js
+JuntoBaseEntity
+dataSource
+writerDataSource
+EventAnalyticsService
