@@ -7,6 +7,9 @@ local wo = vim.wo
 -- local g = vim.g
 
 
+-- nowrap
+o.wrap = false
+
 -- prevent shifting when loading lsp gutter icons
 o.signcolumn = 'yes'
 
@@ -44,24 +47,24 @@ o.cul = true
 
 -- set gutter icons
 local signs = {
-  Error = " ",
-  Warn = " ",
-  Hint = " ",
-  Info = " "
+    Error = " ",
+    Warn = " ",
+    Hint = " ",
+    Info = " "
 }
 
 for name, icon in pairs(signs) do
-  local hl = "DiagnosticSign" .. name
-  vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = hl })
+    local hl = "DiagnosticSign" .. name
+    vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = hl })
 end
 
 vim.diagnostic.config {
-  virtual_text = {
-    prefix = " ",
-  },
-  signs = true,
-  underline = true,
-  update_in_insert = false,
+    virtual_text = {
+        prefix = " ",
+    },
+    signs = true,
+    underline = true,
+    update_in_insert = false,
 }
 
 -- session
