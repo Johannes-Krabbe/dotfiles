@@ -23,13 +23,11 @@ vim.keymap.set("n", "gd", vim.lsp.buf.definition, {})
 vim.keymap.set("n", "gr", vim.lsp.buf.references, {})
 vim.keymap.set("n", "<leader>la", vim.lsp.buf.code_action, {})
 vim.keymap.set("n", "<leader>ln", vim.lsp.buf.rename, {})
+vim.keymap.set("n", "<leader>j", vim.lsp.buf.format, {})
 
 -- Close buffer(s)
 vim.keymap.set("n", "<leader>c", ":bd<CR>")
-vim.keymap.set("n", "<leader>bb", "CloseFileBuffers<CR>")
-
--- Format
-vim.keymap.set("n", "<leader>j", vim.lsp.buf.format, {})
+vim.keymap.set("n", "<leader>be", ":CloseFileBuffers<CR>")
 
 -- Diagnostics
 vim.keymap.set("n", "<leader>df", "<cmd>lua vim.diagnostic.open_float()<cr>")
