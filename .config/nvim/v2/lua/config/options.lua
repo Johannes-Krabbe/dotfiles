@@ -35,3 +35,7 @@ vim.o.swapfile = false
 
 -- prevent shifting when loading lsp gutter icons
 vim.o.signcolumn = 'yes'
+
+
+-- nowrap
+vim.o.wrap = false
