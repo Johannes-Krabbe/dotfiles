@@ -21,11 +21,13 @@ return {
                     },
                     layout_config = {
                         horizontal = {
+                            width = 0.95,
                             preview_width = 0.55,
                             results_width = 0.8,
                         },
+                        vertical = { width = 0.95 }
                     },
-                    file_ignore_patterns = { "node_modules" },
+                    file_ignore_patterns = { "node_modules", "dist" },
                 },
                 extensions = {
                     ["ui-select"] = {

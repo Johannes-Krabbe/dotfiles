@@ -12,6 +12,18 @@ local TAB_WIDTH = 4
 vim.o.tabstop = TAB_WIDTH
 vim.o.shiftwidth = TAB_WIDTH
 
+-- Function to set shiftwidth and tabstop
+local set_shift_tab = function(filetype, shiftwidth, tabstop)
+  vim.api.nvim_create_autocmd("FileType", {
+    pattern = filetype,
+    callback = function()
+      vim.o.shiftwidth = shiftwidth
+      vim.o.tabstop = tabstop
+    end,
+  })
+end
+set_shift_tab('dart', 2, 2)
+
 -- sync clipboards
 vim.o.clipboard = "unnamedplus"
 
