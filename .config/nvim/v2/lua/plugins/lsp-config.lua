@@ -10,7 +10,7 @@ return {
         "williamboman/mason-lspconfig.nvim",
         lazy = false,
         opts = {
-            ensure_installed = { "lua_ls", "ts_ls", "html", "prismals", "eslint", "terraformls", "denols", "tailwindcss" }
+            ensure_installed = { "lua_ls", "ts_ls", "html", "prismals", "eslint", "terraformls", "denols", "tailwindcss", "gopls" }
         },
     },
     {
@@ -58,6 +58,9 @@ return {
                 capabilities = capabilities
             })
             lspconfig.tailwindcss.setup({
+                capabilities = capabilities
+            })
+            lspconfig.gopls.setup({
                 capabilities = capabilities
             })
         end,

@@ -9,6 +9,7 @@ return {
             stages = "static",
             render = "wrapped-compact",
             max_width = 50,
+            top_down = false,
         })
         vim.notify = notify
     end,
