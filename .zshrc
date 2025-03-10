@@ -26,8 +26,9 @@ export PATH=$HOME/dev/flutter/bin:$PATH
 
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
-. "/Users/johanneskrabbe/.deno/env"
+# . "/Users/johanneskrabbe/.deno/env"
 
 
 export PATH="$HOME/.config/scripts:$PATH"
 alias bs='branchstatus.sh'
+alias cd="echo 'Use zoxide instead: '"
