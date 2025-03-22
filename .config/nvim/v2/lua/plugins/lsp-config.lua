@@ -40,7 +40,7 @@ return {
                 settings = {
                     prisma = {
                         formatting = {
-                            indentWidth = 2 -- Set this to your desired tab width
+                            indentWidth = 1
                         }
                     }
                 }

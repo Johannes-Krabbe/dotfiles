@@ -7,10 +7,20 @@ vim.g.mapleader = ' '
 -- use spaces instead of tabs
 vim.o.expandtab = true
 
--- set tab width
-local TAB_WIDTH = 4
-vim.o.tabstop = TAB_WIDTH
-vim.o.shiftwidth = TAB_WIDTH
+-- Set default tab width
+local DEFAULT_TAB_WIDTH = 4
+vim.o.tabstop = DEFAULT_TAB_WIDTH
+vim.o.shiftwidth = DEFAULT_TAB_WIDTH
+
+-- Set specific tab width for Prisma files
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = "prisma",
+  callback = function()
+    vim.opt_local.tabstop = 2
+    vim.opt_local.shiftwidth = 2
+  end,
+})
+
 
 -- Function to set shiftwidth and tabstop
 local set_shift_tab = function(filetype, shiftwidth, tabstop)
