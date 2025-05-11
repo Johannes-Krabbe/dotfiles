@@ -11,6 +11,7 @@ return {
         lazy = false,
         opts = {
             ensure_installed = { "lua_ls", "ts_ls", "html", "prismals", "eslint", "terraformls", "denols", "tailwindcss", "gopls", "pylsp" }
+            ensure_installed = { "lua_ls", "ts_ls", "html", "prismals", "terraformls", "tailwindcss", "gopls" }
         },
     },
     {
@@ -31,6 +32,11 @@ return {
                 capabilities = capabilities
             }
 
+            lspconfig.biome.setup({
+                root_dir = lspconfig.util.root_pattern("biome.json"),
+                capabilities = capabilities
+            })
+
             lspconfig.prismals.setup({
                 capabilities = capabilities,
                 settings = {
@@ -44,9 +50,13 @@ return {
             lspconfig.lua_ls.setup({
                 capabilities = capabilities
             })
+            --[[
             lspconfig.eslint.setup({
+                root_dir = lspconfig.util.root_pattern("eslintrc", ".eslintrc", ".eslintrc.js", ".eslintrc.cjs",
+                    ".eslintrc.json"),
                 capabilities = capabilities
             })
+            ]]
             lspconfig.terraformls.setup({
                 capabilities = capabilities
             })

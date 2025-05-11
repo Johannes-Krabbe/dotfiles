@@ -26,9 +26,16 @@ export PATH=$HOME/dev/flutter/bin:$PATH
 
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
-# . "/Users/johanneskrabbe/.deno/env"
+. "/Users/johanneskrabbe/.deno/env"
 
 
 export PATH="$HOME/.config/scripts:$PATH"
 alias bs='branchstatus.sh'
 alias cd="echo 'Use zoxide instead: '"
+
+# bun completions
+[ -s "/Users/johanneskrabbe/.bun/_bun" ] && source "/Users/johanneskrabbe/.bun/_bun"
+
+# bun
+export BUN_INSTALL="$HOME/.bun"
+export PATH="$BUN_INSTALL/bin:$PATH"
