@@ -10,7 +10,7 @@ return {
         "williamboman/mason-lspconfig.nvim",
         lazy = false,
         opts = {
-            ensure_installed = { "lua_ls", "ts_ls", "html", "prismals", "eslint", "terraformls", "denols", "tailwindcss", "gopls" }
+            ensure_installed = { "lua_ls", "ts_ls", "html", "prismals", "eslint", "terraformls", "denols", "tailwindcss", "gopls", "pylsp" }
         },
     },
     {
@@ -19,11 +19,7 @@ return {
         config = function()
             local capabilities = require('cmp_nvim_lsp').default_capabilities()
             local lspconfig = require("lspconfig")
-            --[[
-            lspconfig.ts_ls.setup {
-                capabilities = capabilities
-            }
-            ]]
+
             lspconfig.denols.setup {
                 root_dir = lspconfig.util.root_pattern("deno.json", "deno.jsonc"),
                 capabilities = capabilities
@@ -61,6 +57,12 @@ return {
                 capabilities = capabilities
             })
             lspconfig.gopls.setup({
+                capabilities = capabilities
+            })
+            lspconfig.rust_analyzer.setup({
+                capabilities = capabilities
+            })
+            lspconfig.pylsp.setup({
                 capabilities = capabilities
             })
         end,
