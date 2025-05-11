@@ -10,7 +10,7 @@ return {
         "williamboman/mason-lspconfig.nvim",
         lazy = false,
         opts = {
-            ensure_installed = { "lua_ls", "ts_ls", "html", "prismals", "eslint", "terraformls", "denols", "tailwindcss", "gopls" }
+            ensure_installed = { "lua_ls", "ts_ls", "html", "prismals", "terraformls", "tailwindcss", "gopls" }
         },
     },
     {
@@ -19,21 +19,17 @@ return {
         config = function()
             local capabilities = require('cmp_nvim_lsp').default_capabilities()
             local lspconfig = require("lspconfig")
-            --[[
-            lspconfig.ts_ls.setup {
-                capabilities = capabilities
-            }
-            ]]
-            lspconfig.denols.setup {
-                root_dir = lspconfig.util.root_pattern("deno.json", "deno.jsonc"),
-                capabilities = capabilities
-            }
 
             lspconfig.ts_ls.setup {
                 root_dir = lspconfig.util.root_pattern("package.json"),
                 single_file_support = false,
                 capabilities = capabilities
             }
+
+            lspconfig.biome.setup({
+                root_dir = lspconfig.util.root_pattern("biome.json"),
+                capabilities = capabilities
+            })
 
             lspconfig.prismals.setup({
                 capabilities = capabilities,
@@ -48,9 +44,13 @@ return {
             lspconfig.lua_ls.setup({
                 capabilities = capabilities
             })
+            --[[
             lspconfig.eslint.setup({
+                root_dir = lspconfig.util.root_pattern("eslintrc", ".eslintrc", ".eslintrc.js", ".eslintrc.cjs",
+                    ".eslintrc.json"),
                 capabilities = capabilities
             })
+            ]]
             lspconfig.terraformls.setup({
                 capabilities = capabilities
             })
