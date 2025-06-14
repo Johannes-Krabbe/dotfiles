@@ -4,8 +4,12 @@ return {
     },
     {
         "nvim-telescope/telescope.nvim",
-        tag = "0.1.6",
-        dependencies = { "nvim-lua/plenary.nvim" },
+        lazy = false,
+        tag = "0.1.8",
+        dependencies = {
+            "nvim-lua/plenary.nvim",
+            "princejoogie/dir-telescope.nvim",
+        },
         config = function()
             require("telescope").setup({
                 defaults = {
@@ -37,6 +41,15 @@ return {
             })
 
             require("telescope").load_extension("ui-select")
+
+            -- Setup dir-telescope first, then load extension
+            require("dir-telescope").setup({
+                hidden = true,
+                no_ignore = false,
+                show_preview = true,
+                follow_symlinks = false,
+            })
+            require("telescope").load_extension("dir")
         end,
     },
 }

@@ -3,6 +3,7 @@ local telescope_builtin = require("telescope.builtin")
 -- Telescope
 vim.keymap.set("n", "<leader>ff", telescope_builtin.find_files, {})
 vim.keymap.set("n", "<leader>fw", telescope_builtin.live_grep, {})
+vim.keymap.set("n", "<leader>fs", "<cmd>Telescope dir live_grep<CR>", { noremap = true, silent = true })
 vim.keymap.set("n", "<leader><leader>", telescope_builtin.buffers, {})
 
 -- Navigate vim panes better
