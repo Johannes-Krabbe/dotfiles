@@ -31,7 +31,7 @@ return {
                         },
                         vertical = { width = 0.95 }
                     },
-                    file_ignore_patterns = { "node_modules", "dist" },
+                    file_ignore_patterns = { "node_modules", "dist", ".git", ".vscode", ".turbo", ".tap", ".next" },
                 },
                 extensions = {
                     ["ui-select"] = {

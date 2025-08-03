@@ -31,7 +31,7 @@ return {
                     ["<C-Space>"] = cmp.mapping.complete(),
                     ["<C-e>"] = cmp.mapping.abort(),
                     ["<CR>"] = cmp.mapping.confirm({ select = true }),
-                    ["<Tab>"] = require("copilot.suggestion").accept()
+                    -- ["<Tab>"] = require("copilot.suggestion").accept()
                 }),
                 sources = cmp.config.sources({
                     { name = "nvim_lsp" },

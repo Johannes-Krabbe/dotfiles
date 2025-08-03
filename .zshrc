@@ -31,7 +31,8 @@ export PATH=$HOME/dev/flutter/bin:$PATH
 
 export PATH="$HOME/.config/scripts:$PATH"
 alias bs='branchstatus.sh'
-alias cd="echo 'Use zoxide instead: '"
+alias nt='$HOME/.config/scripts/tmux/start-neotaste-monorepo.sh'
+# alias cd="echo 'Use zoxide instead: '"
 
 # bun completions
 [ -s "/Users/johanneskrabbe/.bun/_bun" ] && source "/Users/johanneskrabbe/.bun/_bun"
@@ -39,3 +40,5 @@ alias cd="echo 'Use zoxide instead: '"
 # bun
 export BUN_INSTALL="$HOME/.bun"
 export PATH="$BUN_INSTALL/bin:$PATH"
+
+alias claude="/Users/johanneskrabbe/.claude/local/claude"

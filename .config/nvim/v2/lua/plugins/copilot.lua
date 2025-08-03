@@ -1,6 +1,7 @@
 return {
     "zbirenbaum/copilot.lua",
     lazy = false,
+    enabled = false,
     cmd = "Copilot",
     build = ":Copilot auth",
     opts = {
@@ -31,4 +32,3 @@ return {
         server_opts_overrides = {},
     }
 }
-
