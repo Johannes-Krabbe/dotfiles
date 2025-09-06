@@ -1,3 +1,5 @@
+vim.opt.termguicolors = true
+
 require('config.utils')
 require('config.auto')
 require('config.options')

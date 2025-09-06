@@ -61,3 +61,8 @@ vim.o.signcolumn = 'yes'
 
 -- nowrap
 vim.o.wrap = false
+
+-- disable mouse
+vim.o.mouse = ""
+
+vim.wo.fillchars='eob: '

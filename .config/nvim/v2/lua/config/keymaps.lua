@@ -39,8 +39,28 @@ vim.keymap.set("n", "<leader>be", ":CloseFileBuffers<CR>")
 -- Diagnostics
 vim.keymap.set("n", "<leader>df", "<cmd>lua vim.diagnostic.open_float()<cr>")
 
+-- TODO also in visual mode?
+vim.keymap.set("n", "<leader>dn", "<cmd>lua vim.diagnostic.goto_next({ float = false })<cr>")
+vim.keymap.set("n", "<leader>dp", "<cmd>lua vim.diagnostic.goto_prev({ float = false })<cr>")
+
 -- bufferline
 vim.keymap.set("n", "<S-l>", ":BufferLineCycleNext<CR>")
 vim.keymap.set("n", "<S-h>", ":BufferLineCyclePrev<CR>")
 
 vim.keymap.set("n", "<leader>gb", ":GitBlameToggle<CR>")
+
+local mark = require("harpoon.mark")
+local ui = require("harpoon.ui")
+
+vim.keymap.set("n", "<leader>hh", ui.toggle_quick_menu)
+vim.keymap.set("n", "<leader>ha", function()
+    mark.add_file(); print('Harpooned file')
+end)
+
+-- Add numbered navigation (1-9)
+for i = 1, 9 do
+    vim.keymap.set("n", "<leader>h" .. i, function()
+        ui.nav_file(i)
+        print('Hooked to ' .. i)
+    end)
+end
