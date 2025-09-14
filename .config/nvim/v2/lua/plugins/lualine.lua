@@ -9,7 +9,7 @@ return {
                 section_separators = { left = '', right = '' },
                 always_divide_middle = true,
                 globalstatus = true,
-                theme = 'catppuccin-mocha',
+                theme = 'vague',
             },
             sections = {
                 lualine_a = { 'branch' },

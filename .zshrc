@@ -41,4 +41,4 @@ alias nt='$HOME/.config/scripts/tmux/start-neotaste-monorepo.sh'
 export BUN_INSTALL="$HOME/.bun"
 export PATH="$BUN_INSTALL/bin:$PATH"
 
-alias claude="/Users/johanneskrabbe/.claude/local/claude"
+export PATH="$PATH:$(go env GOPATH)/bin"

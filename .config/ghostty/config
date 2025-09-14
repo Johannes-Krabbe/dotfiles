@@ -43,7 +43,7 @@
 # resize-overlay-duration = 4s 200ms
 
 # font-family = "MesloLGS Nerd Font"
-font-family = "Hack"
+font-family = "Hack Nerd Font Mono"
 # theme = "catppuccin-mocha"
 font-size = 19
 font-thicken
