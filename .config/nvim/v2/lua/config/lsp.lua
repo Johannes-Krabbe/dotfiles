@@ -1,12 +1,2 @@
--- required for renaming
-
-local lspconfig = require'lspconfig'
-
--- Set global defaults for all servers
-lspconfig.util.default_config = vim.tbl_extend(
-  'force',
-  lspconfig.util.default_config,
-  {
-    
-  }
-)
+-- LSP configuration is now handled via vim.lsp.config in lua/plugins/lsp-config.lua
+-- This file is no longer needed with Neovim 0.11+ but kept for backwards compatibility

@@ -23,25 +23,46 @@ return {
         lazy = false,
         config = function()
             local capabilities = require('cmp_nvim_lsp').default_capabilities()
-            local lspconfig = require("lspconfig")
 
-            lspconfig.denols.setup({
-                root_dir = lspconfig.util.root_pattern("deno.json", "deno.jsonc"),
+            -- Conditional setup for Deno/TypeScript LSPs to avoid conflicts
+            vim.api.nvim_create_autocmd('FileType', {
+                pattern = { 'javascript', 'javascriptreact', 'typescript', 'typescriptreact' },
+                callback = function(args)
+                    local root = vim.fs.root(args.buf, { 'deno.json', 'deno.jsonc' })
+                    if root then
+                        vim.lsp.enable('denols', args.buf)
+                    else
+                        local ts_root = vim.fs.root(args.buf, { 'package.json' })
+                        if ts_root then
+                            vim.lsp.enable('ts_ls', args.buf)
+                        end
+                    end
+                end,
+            })
+
+            vim.lsp.config('denols', {
+                cmd = { 'deno', 'lsp' },
+                filetypes = { 'javascript', 'javascriptreact', 'typescript', 'typescriptreact' },
+                root_markers = { 'deno.json', 'deno.jsonc' },
                 capabilities = capabilities
             })
 
-            lspconfig.ts_ls.setup({
-                root_dir = lspconfig.util.root_pattern("package.json"),
-                single_file_support = false,
+            vim.lsp.config('ts_ls', {
+                cmd = { 'typescript-language-server', '--stdio' },
+                filetypes = { 'javascript', 'javascriptreact', 'typescript', 'typescriptreact' },
+                root_markers = { 'package.json' },
                 capabilities = capabilities
             })
 
-            lspconfig.biome.setup({
-                root_dir = lspconfig.util.root_pattern("biome.json"),
+            vim.lsp.config('biome', {
+                cmd = { 'biome', 'lsp-proxy' },
+                root_markers = { 'biome.json' },
                 capabilities = capabilities
             })
 
-            lspconfig.prismals.setup({
+            vim.lsp.config('prismals', {
+                cmd = { 'prisma-language-server', '--stdio' },
+                filetypes = { 'prisma' },
                 capabilities = capabilities,
                 settings = {
                     prisma = {
@@ -52,63 +73,79 @@ return {
                 }
             })
 
-            lspconfig.lua_ls.setup {
+            vim.lsp.config('lua_ls', {
+                cmd = { 'lua-language-server' },
+                filetypes = { 'lua' },
+                root_markers = { '.luarc.json', '.luarc.jsonc', '.luacheckrc', '.stylua.toml', 'stylua.toml', 'selene.toml', 'selene.yml', '.git' },
                 capabilities = capabilities,
                 settings = {
                     Lua = {
                         runtime = {
-                            -- Tell the language server which version of Lua you're using
-                            -- (most likely LuaJIT in the case of Neovim)
                             version = 'LuaJIT',
                         },
                         diagnostics = {
-                            -- Get the language server to recognize the `vim` global
                             globals = {
                                 'vim',
                                 'require'
                             },
                         },
                         workspace = {
-                            -- Make the server aware of Neovim runtime files
                             library = vim.api.nvim_get_runtime_file("", true),
                         },
-                        -- Do not send telemetry data containing a randomized but unique identifier
                         telemetry = {
                             enable = false,
                         },
                     },
                 },
-            }
+            })
 
-            lspconfig.eslint.setup({
-                root_dir = lspconfig.util.root_pattern("eslintrc", ".eslintrc", ".eslintrc.js", ".eslintrc.cjs",
-                    ".eslintrc.json"),
+            vim.lsp.config('eslint', {
+                cmd = { 'vscode-eslint-language-server', '--stdio' },
+                filetypes = { 'javascript', 'javascriptreact', 'typescript', 'typescriptreact' },
+                root_markers = { 'eslintrc', '.eslintrc', '.eslintrc.js', '.eslintrc.cjs', '.eslintrc.json' },
                 capabilities = capabilities
             })
 
-            lspconfig.terraformls.setup({
+            vim.lsp.config('terraformls', {
+                cmd = { 'terraform-ls', 'serve' },
+                filetypes = { 'terraform', 'terraform-vars' },
                 capabilities = capabilities
             })
 
-            lspconfig.html.setup({
+            vim.lsp.config('html', {
+                cmd = { 'vscode-html-language-server', '--stdio' },
+                filetypes = { 'html' },
                 capabilities = capabilities
             })
 
-            lspconfig.tailwindcss.setup({
+            vim.lsp.config('tailwindcss', {
+                cmd = { 'tailwindcss-language-server', '--stdio' },
+                filetypes = { 'html', 'css', 'scss', 'javascript', 'javascriptreact', 'typescript', 'typescriptreact' },
+                root_markers = { 'tailwind.config.js', 'tailwind.config.cjs', 'tailwind.config.mjs', 'tailwind.config.ts' },
                 capabilities = capabilities
             })
 
-            lspconfig.gopls.setup({
+            vim.lsp.config('gopls', {
+                cmd = { 'gopls' },
+                filetypes = { 'go', 'gomod', 'gowork', 'gotmpl' },
+                root_markers = { 'go.work', 'go.mod', '.git' },
                 capabilities = capabilities
             })
 
-            lspconfig.pylsp.setup({
+            vim.lsp.config('pylsp', {
+                cmd = { 'pylsp' },
+                filetypes = { 'python' },
                 capabilities = capabilities
             })
 
-            lspconfig.templ.setup({
+            vim.lsp.config('templ', {
+                cmd = { 'templ', 'lsp' },
+                filetypes = { 'templ' },
                 capabilities = capabilities
             })
+
+            -- Enable LSP servers (denols and ts_ls are handled via autocmd above)
+            vim.lsp.enable({ 'biome', 'prismals', 'lua_ls', 'eslint', 'terraformls', 'html', 'tailwindcss', 'gopls', 'pylsp', 'templ' })
         end,
     },
 }
