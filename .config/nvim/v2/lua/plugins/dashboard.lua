@@ -26,7 +26,7 @@ return {
                         icon = '󱠒  ',
                         icon_hl = 'Title',
                         desc = 'Restore Session',
-                        action = "SessionRestore"
+                        action = "AutoSession restore"
                     },
 
                     {

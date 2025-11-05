@@ -1,7 +1,7 @@
 return {
     "akinsho/bufferline.nvim",
-    lazy = false,
-    enabled = false,
+    lazy = true,
+    enabled = true,
     opts = {
         options = {
             separator_style = "slant",
