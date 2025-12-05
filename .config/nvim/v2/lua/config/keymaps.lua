@@ -26,6 +26,9 @@ vim.keymap.set("n", "gr", vim.lsp.buf.references, {})
 vim.keymap.set("n", "<leader>la", vim.lsp.buf.code_action, {})
 vim.keymap.set("n", "<leader>ln", vim.lsp.buf.rename, {})
 
+-- delete
+vim.keymap.set('n', 'dD', '"_dd', { noremap = true, desc = 'Delete line without yanking' })
+
 -- Format
 local conform = require 'conform'
 vim.keymap.set('n', '<leader>j', function()
