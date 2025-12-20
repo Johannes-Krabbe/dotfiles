@@ -45,3 +45,30 @@ export PATH="$PATH:$(go env GOPATH)/bin"
 
 alias claude="/Users/johanneskrabbe/.claude/local/claude"
 
+bindkey -v
+export KEYTIMEOUT=1
+
+# Change cursor shape for different vi modes.
+function zle-keymap-select {
+  if [[ ${KEYMAP} == vicmd ]] ||
+     [[ $1 = 'block' ]]; then
+    echo -ne '\e[2 q' # Block cursor (Normal mode)
+  elif [[ ${KEYMAP} == main ]] ||
+       [[ ${KEYMAP} == viins ]] ||
+       [[ ${KEYMAP} == '' ]] ||
+       [[ $1 = 'beam' ]]; then
+    echo -ne '\e[6 q' # Beam cursor (Insert mode)
+  fi
+}
+zle -N zle-keymap-select
+
+# Ensure beam cursor when starting a new line
+function zle-line-init {
+    zle-keymap-select 'beam'
+}
+zle -N zle-line-init
+
+# Fix for cursor not resetting after running a command
+precmd() { 
+    echo -ne '\e[6 q' 
+}
