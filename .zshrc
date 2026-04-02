@@ -43,7 +43,6 @@ export PATH="$BUN_INSTALL/bin:$PATH"
 
 export PATH="$PATH:$(go env GOPATH)/bin"
 
-alias claude="/Users/johanneskrabbe/.claude/local/claude"
 
 bindkey -v
 export KEYTIMEOUT=1
@@ -72,3 +71,12 @@ zle -N zle-line-init
 precmd() { 
     echo -ne '\e[6 q' 
 }
+export PATH="$HOME/.local/bin:$PATH"
+
+git() {
+    if [[ "$1" == "checkout" && "$2" != "--" ]]; then
+      echo "Use 'git switch' (branches) or 'git restore' (files) instead."
+      return 1
+    fi
+    command git "$@"
+  }

@@ -15,3 +15,12 @@ n -c v1
 ```
 
 the script will always default to the latest version
+
+# Versions
+## v1 & v2
+NVIM v0.11.4
+Build type: Release
+LuaJIT 2.1.1753364724
+Run "nvim -V1 -v" for more info
+
+## v3
