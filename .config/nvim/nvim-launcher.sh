@@ -26,7 +26,7 @@ done
 
 # If the configuration directory exists, run nvim with it
 if [ -d "$SELECTED_CONFIG" ]; then
-    NVIM_APPNAME="$SELECTED_VERSION" nvim "$@"
+    exec env NVIM_APPNAME="$SELECTED_VERSION" nvim "$@"
 else
     echo "Configuration directory $SELECTED_CONFIG does not exist."
     exit 1
