@@ -43,18 +43,16 @@
 # resize-overlay-duration = 4s 200ms
 
 # font-family = "MesloLGS Nerd Font"
-font-family = "Hack Nerd Font Propo"
+# font-family = "Hack Nerd Font Propo"
+font-family = "DMMono Nerd Font"
 
 font-feature = -calt, -liga, -dlig
 
-# theme = "catppuccin-mocha"
 font-size = 19
 font-thicken
 keybind = shift+enter=text:\n
 
-
-# theme = vague
-
+# vague
 palette = 0=#252530
 palette = 1=#d8647e
 palette = 2=#7fa563

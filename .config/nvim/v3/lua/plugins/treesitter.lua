@@ -1,5 +1,5 @@
 -- Equivalent of your old `ensure_installed`
-local ensure_installed = { "devicetree", "typescript", "javascript", "prisma", "tsx" }
+local ensure_installed = { "devicetree", "typescript", "javascript", "prisma", "tsx", "ecma", "jsx" }
 local installed = require("nvim-treesitter.config").get_installed()
 local to_install = vim.iter(ensure_installed)
     :filter(function(p) return not vim.tbl_contains(installed, p) end)
