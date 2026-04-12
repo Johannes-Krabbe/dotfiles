@@ -44,6 +44,9 @@
 
 # font-family = "MesloLGS Nerd Font"
 font-family = "Hack Nerd Font Propo"
+
+font-feature = -calt, -liga, -dlig
+
 # theme = "catppuccin-mocha"
 font-size = 19
 font-thicken
