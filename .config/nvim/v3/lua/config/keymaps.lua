@@ -70,5 +70,5 @@ end
 -- conform
 local conform = require 'conform'
 vim.keymap.set('n', '<leader>j', function()
-    conform.format { async = true, lsp_fallback = true, timeout_ms = 500 }
+    conform.format { async = true, lsp_format = 'fallback', timeout_ms = 500 }
 end, { desc = 'Format the current buffer' })

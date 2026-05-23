@@ -41,6 +41,7 @@ vim.pack.add({
 })
 
 require('plugins.lsp')
+require('plugins.conform')
 require('plugins.completions')
 require('plugins.telescope')
 require('plugins.nvim-tree')

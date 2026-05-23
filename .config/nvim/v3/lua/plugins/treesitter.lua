@@ -1,5 +1,6 @@
 -- Equivalent of your old `ensure_installed`
-local ensure_installed = { "devicetree", "typescript", "javascript", "prisma", "tsx", "ecma", "jsx" }
+-- ecma/jsx are query-only deps inherited by typescript/javascript/tsx — keep them first
+local ensure_installed = { "ecma", "jsx", "typescript", "javascript", "tsx", "devicetree", "prisma" }
 local installed = require("nvim-treesitter.config").get_installed()
 local to_install = vim.iter(ensure_installed)
     :filter(function(p) return not vim.tbl_contains(installed, p) end)
