@@ -1,6 +1,6 @@
 require('mason').setup()
 require('mason-lspconfig').setup({
-    ensure_installed = { 'lua_ls', 'ts_ls', 'html', 'prismals', 'terraformls', 'tailwindcss', 'biome' },
+    ensure_installed = { 'lua_ls', 'ts_ls', 'html', 'prismals', 'terraformls', 'tailwindcss', 'biome', 'gopls' },
     automatic_enable = true,
 })
 
@@ -64,4 +64,19 @@ vim.lsp.config('lua_ls', {
     },
 })
 
-vim.lsp.enable({ 'ts_ls', 'biome', 'tailwindcss', 'prismals', 'html', 'terraformls', 'lua_ls' })
+vim.lsp.config('gopls', {
+    cmd = { 'gopls' },
+    filetypes = { 'go', 'gomod', 'gowork', 'gotmpl' },
+    root_markers = { 'go.mod', '.git' },
+    capabilities = capabilities,
+    settings = {
+        gopls = {
+            gofumpt = true,
+            usePlaceholders = true,
+            completeUnimported = true,
+            staticcheck = true,
+        },
+    },
+})
+
+vim.lsp.enable({ 'ts_ls', 'biome', 'tailwindcss', 'prismals', 'html', 'terraformls', 'lua_ls', 'gopls' })
