@@ -31,6 +31,7 @@ export PATH=$HOME/dev/flutter/bin:$PATH
 
 export PATH="$HOME/.config/scripts:$PATH"
 alias bs='branchstatus.sh'
+alias wt='$HOME/.config/scripts/tmux/wt.sh'
 alias nt='$HOME/.config/scripts/tmux/start-neotaste-monorepo.sh'
 # alias cd="echo 'Use zoxide instead: '"
 
@@ -80,3 +81,4 @@ git() {
     fi
     command git "$@"
   }
+source <(COMPLETE=zsh slumber)
