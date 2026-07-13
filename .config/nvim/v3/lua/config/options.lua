@@ -71,7 +71,6 @@ vim.api.nvim_create_autocmd("FileType", {
         vim.opt_local.spelllang = "en,de"
 
         vim.opt_local.textwidth = 0
-        vim.opt_local.colorcolumn = "80"
 
         local opts = { buffer = true }
         local expr = { expr = true, buffer = true }

@@ -37,3 +37,8 @@ cmp.setup({
         { name = 'buffer' },
     }),
 })
+
+-- Disable completion suggestions in markdown files
+cmp.setup.filetype('markdown', {
+    enabled = false,
+})
