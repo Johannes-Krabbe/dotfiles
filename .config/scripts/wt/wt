@@ -1,0 +1,323 @@
+#!/usr/bin/env zsh
+#
+# wt — manage git worktrees with one command.
+#
+#   wt -c, --create <branch>   Create a worktree off the default branch and open a tmux session in it.
+#   wt -s, --switch <branch>   Switch to the tmux session for an existing worktree.
+#   wt -m, --merge  <branch>   Merge <branch> into the current branch, then remove its worktree and branch.
+#   wt -d, --delete <branch>   Remove a worktree and delete its branch (fails if not fully merged).
+#   wt -D           <branch>   Force-remove a worktree and delete its branch (like -d, but never fails on unmerged).
+#   wt -h, --help              Show this help.
+#
+# Worktrees live under ${WT_WORKTREES_DIR:-$HOME/Developer/worktrees}/<repo>/<branch>.
+# Everything is derived from the git repo you run it in, so it works in any repo.
+
+set -euo pipefail
+emulate -L zsh
+setopt no_nomatch
+
+readonly PROG="${0:t}"
+readonly WORKTREES_ROOT="${WT_WORKTREES_DIR:-$HOME/Developer/worktrees}"
+
+# ---------------------------------------------------------------------------
+# Output helpers
+# ---------------------------------------------------------------------------
+
+err()  { print -u2 -r -- "$PROG: $*"; }
+die()  { err "$*"; exit 1; }
+
+usage() {
+    cat <<EOF
+Manage git worktrees.
+
+Usage:
+  $PROG -c, --create <branch>   Create a worktree off the default branch, open a tmux session in it
+  $PROG -s, --switch <branch>   Switch to the tmux session for an existing worktree
+  $PROG -m, --merge  <branch>   Merge <branch> into the current branch, then remove its worktree + branch
+  $PROG -d, --delete <branch>   Remove a worktree and delete its branch (fails if not fully merged)
+  $PROG -D           <branch>   Force-remove a worktree and delete its branch (never fails on unmerged)
+  $PROG -h, --help              Show this help
+
+Worktrees are stored under:
+  ${WORKTREES_ROOT}/<repo>/<branch>
+Override the base with the WT_WORKTREES_DIR environment variable.
+EOF
+}
+
+# ---------------------------------------------------------------------------
+# git / repo helpers
+# ---------------------------------------------------------------------------
+
+# Absolute path of the main worktree (the first entry of `git worktree list`).
+main_worktree() {
+    git worktree list --porcelain 2>/dev/null \
+        | awk '/^worktree /{print substr($0, 10); exit}'
+}
+
+# Best-effort default branch: origin/HEAD, else main, else master, else main worktree HEAD.
+default_branch() {
+    local b
+    if b=$(git symbolic-ref --quiet --short refs/remotes/origin/HEAD 2>/dev/null); then
+        print -r -- "${b#origin/}"
+        return
+    fi
+    local c
+    for c in main master; do
+        if git show-ref --verify --quiet "refs/heads/$c"; then
+            print -r -- "$c"
+            return
+        fi
+    done
+    git -C "$(main_worktree)" rev-parse --abbrev-ref HEAD
+}
+
+# Path of the worktree currently checked out on <branch>, or empty if none.
+worktree_for_branch() {
+    local branch="$1"
+    git worktree list --porcelain 2>/dev/null | awk -v want="refs/heads/$branch" '
+        /^worktree /     { path = substr($0, 10) }
+        /^branch /       { if ($2 == want) { print path; exit } }
+    '
+}
+
+# tmux session name for a branch (matches the create convention).
+session_name() {
+    print -r -- "wt-$(print -r -- "$1" | tr './:' '---')"
+}
+
+# Kill the tmux session associated with a branch, if it exists.
+kill_session() {
+    local session; session="$(session_name "$1")"
+    if command -v tmux >/dev/null 2>&1 && tmux has-session -t "$session" 2>/dev/null; then
+        tmux kill-session -t "$session" 2>/dev/null || true
+        print -r -- "Killed tmux session '$session'."
+    fi
+}
+
+# Open (or reuse) a tmux session rooted in a worktree.
+open_worktree_session() {
+    local branch="$1" worktree_dir="$2"
+
+    if ! command -v tmux >/dev/null 2>&1; then
+        print -r -- "tmux not found; cd into: $worktree_dir"
+        return
+    fi
+
+    local session; session="$(session_name "$branch")"
+    if ! tmux has-session -t "$session" 2>/dev/null; then
+        tmux new-session -d -s "$session" -c "$worktree_dir"
+    fi
+    if [[ -n "${TMUX:-}" ]]; then
+        exec tmux switch-client -t "$session"
+    else
+        exec tmux attach-session -t "$session"
+    fi
+}
+
+# Would `git branch -d <branch>` succeed? True if merged into HEAD or its upstream.
+branch_is_merged() {
+    local branch="$1"
+    if git merge-base --is-ancestor "refs/heads/$branch" HEAD 2>/dev/null; then
+        return 0
+    fi
+    local up
+    if up=$(git rev-parse --verify --quiet "$branch@{upstream}" 2>/dev/null); then
+        git merge-base --is-ancestor "refs/heads/$branch" "$up" 2>/dev/null && return 0
+    fi
+    return 1
+}
+
+# Reject branch names that are unsafe to use in a filesystem path.
+validate_branch() {
+    local branch="$1"
+    [[ -n "$branch" ]] || die "empty branch name."
+    case "$branch" in
+        -*)        die "invalid branch name (leading '-'): $branch" ;;
+        /*)        die "invalid branch name (absolute path): $branch" ;;
+        *..*)      die "invalid branch name (contains '..'): $branch" ;;
+        */)        die "invalid branch name (trailing '/'): $branch" ;;
+    esac
+}
+
+require_git_repo() {
+    git rev-parse --is-inside-work-tree >/dev/null 2>&1 \
+        || die "not inside a git repository."
+}
+
+# ---------------------------------------------------------------------------
+# Commands
+# ---------------------------------------------------------------------------
+
+cmd_create() {
+    local branch="$1"
+    validate_branch "$branch"
+    require_git_repo
+
+    local root; root="$(main_worktree)"
+    local base; base="$(default_branch)"
+    local repo; repo="${root:t}"
+    local worktree_dir="$WORKTREES_ROOT/$repo/$branch"
+
+    local existing_worktree; existing_worktree="$(worktree_for_branch "$branch")"
+    if [[ -n "$existing_worktree" ]]; then
+        die "worktree for branch '$branch' already exists at $existing_worktree; use '$PROG --switch $branch'."
+    fi
+    if git show-ref --verify --quiet "refs/heads/$branch"; then
+        die "branch '$branch' already exists, refusing to reuse it."
+    fi
+    if [[ -e "$worktree_dir" ]]; then
+        die "worktree path already exists: $worktree_dir"
+    fi
+
+    mkdir -p "${worktree_dir:h}"
+    git -C "$root" worktree add -b "$branch" "$worktree_dir" "$base"
+    print -r -- "Worktree ready at $worktree_dir (branch '$branch' off '$base')."
+
+    open_worktree_session "$branch" "$worktree_dir"
+}
+
+cmd_switch() {
+    local branch="$1"
+    validate_branch "$branch"
+    require_git_repo
+
+    local worktree_dir; worktree_dir="$(worktree_for_branch "$branch")"
+    if [[ -z "$worktree_dir" ]]; then
+        die "no worktree exists for branch '$branch'."
+    fi
+    if [[ ! -d "$worktree_dir" ]]; then
+        die "worktree for branch '$branch' is registered at a missing path: $worktree_dir"
+    fi
+
+    open_worktree_session "$branch" "$worktree_dir"
+}
+
+cmd_merge() {
+    local branch="$1"
+    validate_branch "$branch"
+    require_git_repo
+
+    local current; current="$(git rev-parse --abbrev-ref HEAD)"
+    if [[ "$branch" == "$current" ]]; then
+        die "'$branch' is the current branch; can't merge it into itself."
+    fi
+    if ! git show-ref --verify --quiet "refs/heads/$branch"; then
+        die "branch '$branch' does not exist."
+    fi
+    if [[ -n "$(git status --porcelain)" ]]; then
+        die "current worktree has uncommitted changes. Commit or stash them first."
+    fi
+
+    # Don't merge from inside the worktree we're about to delete.
+    local branch_wt; branch_wt="$(worktree_for_branch "$branch")"
+    local here; here="$(git rev-parse --show-toplevel)"
+    if [[ -n "$branch_wt" && "$branch_wt" == "$here" ]]; then
+        die "you are inside the worktree for '$branch'. Run this from the target worktree/root."
+    fi
+
+    print -r -- "Merging '$branch' into '$current'..."
+    if ! git merge "$branch"; then
+        die "merge failed (conflicts?). Resolve and commit, or run 'git merge --abort'. Worktree left intact."
+    fi
+
+    remove_worktree "$branch_wt"
+    delete_branch "$branch" -d
+    kill_session "$branch"
+    print -r -- "Merged '$branch' into '$current' and cleaned up its worktree and branch."
+}
+
+cmd_delete() {
+    local branch="$1" force_flag="$2"   # force_flag is -d or -D
+    validate_branch "$branch"
+    require_git_repo
+
+    local base; base="$(default_branch)"
+    local current; current="$(git rev-parse --abbrev-ref HEAD)"
+    if [[ "$branch" == "$base" ]]; then
+        die "refusing to delete the default branch '$branch'."
+    fi
+    if [[ "$branch" == "$current" ]]; then
+        die "'$branch' is checked out here; switch away before deleting it."
+    fi
+    if ! git show-ref --verify --quiet "refs/heads/$branch"; then
+        die "branch '$branch' does not exist."
+    fi
+
+    # For a safe delete, verify the branch is merged *before* removing its
+    # worktree — git requires the worktree gone before it will delete the
+    # branch, so this is the only place left to fail without doing damage.
+    if [[ "$force_flag" == "-d" ]] && ! branch_is_merged "$branch"; then
+        die "branch '$branch' is not fully merged; use -D to force-delete."
+    fi
+
+    local branch_wt; branch_wt="$(worktree_for_branch "$branch")"
+    remove_worktree "$branch_wt"
+    delete_branch "$branch" "$force_flag"
+    kill_session "$branch"
+
+    local what="Deleted"
+    [[ "$force_flag" == "-D" ]] && what="Force-deleted"
+    print -r -- "$what branch '$branch'${branch_wt:+ and its worktree}."
+}
+
+# Remove a worktree (path may be empty) and prune stale registrations.
+remove_worktree() {
+    local branch_wt="$1"
+    local root; root="$(main_worktree)"
+    if [[ -n "$branch_wt" ]]; then
+        git -C "$root" worktree remove --force "$branch_wt" 2>/dev/null \
+            || err "worktree not cleanly removed; cleaning the folder directly."
+        [[ -e "$branch_wt" ]] && rm -rf "$branch_wt"
+    fi
+    git -C "$root" worktree prune
+}
+
+# Delete a branch with the given flag (-d or -D). Aborts on failure.
+delete_branch() {
+    local branch="$1" del="$2"
+    local root; root="$(main_worktree)"
+    if git -C "$root" show-ref --verify --quiet "refs/heads/$branch"; then
+        git -C "$root" branch "$del" "$branch" || die "failed to delete branch '$branch'."
+    fi
+}
+
+# ---------------------------------------------------------------------------
+# Argument parsing
+# ---------------------------------------------------------------------------
+
+main() {
+    if [[ $# -eq 0 ]]; then
+        usage
+        exit 1
+    fi
+
+    local action="" branch="" del_flag="-d"
+    case "$1" in
+        -c|--create) action="create" ;;
+        -s|--switch) action="switch" ;;
+        -m|--merge)  action="merge"  ;;
+        -d|--delete) action="delete"; del_flag="-d" ;;
+        -D)          action="delete"; del_flag="-D" ;;
+        -h|--help)   usage; exit 0 ;;
+        -*)          die "unknown option: $1 (try '$PROG --help')" ;;
+        *)           die "unknown command: $1 (try '$PROG --help')" ;;
+    esac
+    shift
+
+    if [[ $# -lt 1 || -z "${1:-}" ]]; then
+        die "'$action' requires a branch name (try '$PROG --help')."
+    fi
+    branch="$1"; shift
+    if [[ $# -gt 0 ]]; then
+        die "unexpected extra arguments: $*"
+    fi
+
+    case "$action" in
+        create) cmd_create "$branch" ;;
+        switch) cmd_switch "$branch" ;;
+        merge)  cmd_merge  "$branch" ;;
+        delete) cmd_delete "$branch" "$del_flag" ;;
+    esac
+}
+
+main "$@"
