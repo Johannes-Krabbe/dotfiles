@@ -7,6 +7,7 @@
 #   wt -m, --merge  <branch>   Merge <branch> into the current branch, then remove its worktree and branch.
 #   wt -d, --delete <branch>   Remove a worktree and delete its branch (fails if not fully merged).
 #   wt -D           <branch>   Force-remove a worktree and delete its branch (like -d, but never fails on unmerged).
+#   wt ls, --list              List worktrees, most recently used first.
 #   wt -h, --help              Show this help.
 #
 # Worktrees live under ${WT_WORKTREES_DIR:-$HOME/Developer/worktrees}/<repo>/<branch>.
@@ -36,6 +37,7 @@ Usage:
   $PROG -m, --merge  <branch>   Merge <branch> into the current branch, then remove its worktree + branch
   $PROG -d, --delete <branch>   Remove a worktree and delete its branch (fails if not fully merged)
   $PROG -D           <branch>   Force-remove a worktree and delete its branch (never fails on unmerged)
+  $PROG ls, --list              List worktrees, most recently used first
   $PROG -h, --help              Show this help
 
 Worktrees are stored under:
@@ -78,6 +80,35 @@ worktree_for_branch() {
         /^worktree /     { path = substr($0, 10) }
         /^branch /       { if ($2 == want) { print path; exit } }
     '
+}
+
+# Unix mtime of a file, portable across macOS (stat -f) and GNU (stat -c).
+mtime_of() {
+    local f="$1"
+    [[ -n "$f" && -e "$f" ]] || return 1
+    stat -f %m "$f" 2>/dev/null || stat -c %Y "$f" 2>/dev/null
+}
+
+# Last-activity timestamp for a worktree: mtime of its per-worktree HEAD reflog,
+# falling back to its HEAD file, then the worktree directory itself.
+worktree_mtime() {
+    local wtpath="$1" p
+    p="$(git -C "$wtpath" rev-parse --path-format=absolute --git-path logs/HEAD 2>/dev/null)"
+    mtime_of "$p" && return 0
+    p="$(git -C "$wtpath" rev-parse --path-format=absolute --git-path HEAD 2>/dev/null)"
+    mtime_of "$p" && return 0
+    mtime_of "$wtpath"
+}
+
+# Compact "2h ago"-style rendering of an age in seconds.
+human_age() {
+    local s="$1"
+    if   (( s < 60 ));     then print -r -- "${s}s ago"
+    elif (( s < 3600 ));   then print -r -- "$(( s / 60 ))m ago"
+    elif (( s < 86400 ));  then print -r -- "$(( s / 3600 ))h ago"
+    elif (( s < 604800 )); then print -r -- "$(( s / 86400 ))d ago"
+    else                        print -r -- "$(( s / 604800 ))w ago"
+    fi
 }
 
 # tmux session name for a branch (matches the create convention).
@@ -281,6 +312,58 @@ delete_branch() {
     fi
 }
 
+cmd_ls() {
+    require_git_repo
+
+    local root here now tab=$'\t'
+    root="$(main_worktree)"
+    here="$(git rev-parse --show-toplevel 2>/dev/null || true)"
+    now="$(date +%s)"
+
+    # Parse `git worktree list --porcelain` into parallel arrays. Done in the
+    # function's own scope (process substitution, not a pipe) so the arrays and
+    # per-item worktree_mtime lookups actually persist.
+    local -a paths branches
+    local line wtpath="" branch=""
+    while IFS= read -r line; do
+        case "$line" in
+            "worktree "*)
+                [[ -n "$wtpath" ]] && { paths+=("$wtpath"); branches+=("${branch:-(detached)}"); }
+                wtpath="${line#worktree }"; branch=""
+                ;;
+            "branch refs/heads/"*) branch="${line#branch refs/heads/}" ;;
+            "bare")                branch="(bare)" ;;
+        esac
+    done < <(git worktree list --porcelain 2>/dev/null)
+    [[ -n "$wtpath" ]] && { paths+=("$wtpath"); branches+=("${branch:-(detached)}"); }
+
+    if (( ${#paths} == 0 )); then
+        print -r -- "No worktrees found."
+        return
+    fi
+
+    # Build "mtime<TAB>path<TAB>branch" rows, then sort by mtime descending.
+    local -a rows
+    local i ts
+    for (( i = 1; i <= ${#paths}; i++ )); do
+        ts="$(worktree_mtime "${paths[i]}" 2>/dev/null)" || ts=0
+        [[ "$ts" == <-> ]] || ts=0            # keep only a valid integer
+        rows+=("${ts}${tab}${paths[i]}${tab}${branches[i]}")
+    done
+    local sorted; sorted="$(print -rl -- "${rows[@]}" | sort -rn -t"$tab" -k1,1)"
+
+    printf '%-2s %-11s %-22s %s\n' "" "LAST USED" "BRANCH" "PATH"
+    local p b age mark tag disp diff
+    while IFS=$tab read -r ts p b; do
+        (( diff = now - ts )); (( diff < 0 )) && diff=0
+        age="$(human_age "$diff")"
+        [[ "$p" == "$here" ]] && mark="*" || mark=" "
+        [[ "$p" == "$root" ]] && tag=" (main)" || tag=""
+        disp="${p/#$HOME/~}"
+        printf '%-2s %-11s %-22s %s\n' "$mark" "$age" "${b}${tag}" "$disp"
+    done <<< "$sorted"
+}
+
 # ---------------------------------------------------------------------------
 # Argument parsing
 # ---------------------------------------------------------------------------
@@ -293,16 +376,24 @@ main() {
 
     local action="" branch="" del_flag="-d"
     case "$1" in
-        -c|--create) action="create" ;;
-        -s|--switch) action="switch" ;;
-        -m|--merge)  action="merge"  ;;
-        -d|--delete) action="delete"; del_flag="-d" ;;
-        -D)          action="delete"; del_flag="-D" ;;
-        -h|--help)   usage; exit 0 ;;
-        -*)          die "unknown option: $1 (try '$PROG --help')" ;;
-        *)           die "unknown command: $1 (try '$PROG --help')" ;;
+        -c|--create)    action="create" ;;
+        -s|--switch)    action="switch" ;;
+        -m|--merge)     action="merge"  ;;
+        -d|--delete)    action="delete"; del_flag="-d" ;;
+        -D)             action="delete"; del_flag="-D" ;;
+        ls|list|--list) action="list"   ;;
+        -h|--help)      usage; exit 0 ;;
+        -*)             die "unknown option: $1 (try '$PROG --help')" ;;
+        *)              die "unknown command: $1 (try '$PROG --help')" ;;
     esac
     shift
+
+    # `list` takes no branch argument.
+    if [[ "$action" == "list" ]]; then
+        [[ $# -gt 0 ]] && die "'ls' takes no arguments (try '$PROG --help')."
+        cmd_ls
+        return
+    fi
 
     if [[ $# -lt 1 || -z "${1:-}" ]]; then
         die "'$action' requires a branch name (try '$PROG --help')."
