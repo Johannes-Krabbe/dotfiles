@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, config, ... }:
 
 {
   nixpkgs.hostPlatform = "aarch64-darwin";
@@ -28,12 +28,26 @@
     zoxide
   ];
 
-  # oh-my-zsh + powerlevel10k in ~/.zshrc already handle completion and the prompt.
+  # ── Shell ────────────────────────────────────────────────────
   programs.zsh = {
     enable = true;
-    enableCompletion = false;
-    promptInit = "";
+    enableCompletion = true; # runs compinit in /etc/zshrc
+    promptInit = "";         # powerlevel10k sets the prompt
   };
+
+  # Theme + plugins, loaded from ~/.zshrc with `source /etc/zsh-plugins.zsh`
+  environment.etc."zsh-plugins.zsh".text = ''
+    source ${pkgs.zsh-powerlevel10k}/share/zsh-powerlevel10k/powerlevel10k.zsh-theme
+    source ${pkgs.zsh-autosuggestions}/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+    source ${pkgs.zsh-f-sy-h}/share/zsh/site-functions/F-Sy-H.plugin.zsh
+  '';
+
+  # Install the tools in ~/.config/mise/config.toml (e.g. node) on every rebuild.
+  system.activationScripts.postActivation.text = ''
+    echo >&2 "installing mise tools..."
+    sudo --user=${config.system.primaryUser} --set-home -- ${pkgs.mise}/bin/mise install --yes \
+      || echo >&2 "warning: mise install failed"
+  '';
 
   # ── Apps (installed by Homebrew, declared here) ──────────────
   homebrew = {

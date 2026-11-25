@@ -2,16 +2,20 @@ if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
-ZSH_THEME="powerlevel10k/powerlevel10k"
+# History
+HISTFILE=~/.zsh_history
+HISTSIZE=50000
+SAVEHIST=10000
+setopt extended_history hist_expire_dups_first hist_ignore_dups hist_ignore_space hist_verify share_history
 
-plugins=(
-    git
-    zsh-autosuggestions
-    F-Sy-H
-)
+# Navigation + completion
+setopt auto_cd auto_pushd pushd_ignore_dups interactive_comments
+zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}' 'r:|=*' 'l:|=* r:|=*'
+zstyle ':completion:*' menu select
+alias ls='ls -G'
 
-export ZSH="$HOME/.oh-my-zsh"
-source $ZSH/oh-my-zsh.sh
+# Theme (powerlevel10k) + plugins (autosuggestions, F-Sy-H), installed by Nix
+[[ -r /etc/zsh-plugins.zsh ]] && source /etc/zsh-plugins.zsh
 
 eval "$(zoxide init zsh)"
 
@@ -42,6 +46,15 @@ export PATH="$BUN_INSTALL/bin:$PATH"
 
 bindkey -v
 export KEYTIMEOUT=1
+
+# Up/down arrows search history for what's already typed
+autoload -U up-line-or-beginning-search down-line-or-beginning-search
+zle -N up-line-or-beginning-search
+zle -N down-line-or-beginning-search
+for km in viins vicmd; do
+  bindkey -M $km '^[[A' up-line-or-beginning-search '^[OA' up-line-or-beginning-search
+  bindkey -M $km '^[[B' down-line-or-beginning-search '^[OB' down-line-or-beginning-search
+done
 
 # Change cursor shape for different vi modes.
 function zle-keymap-select {
