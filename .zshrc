@@ -17,17 +17,16 @@ eval "$(zoxide init zsh)"
 
 alias n="~/.config/nvim/nvim-launcher.sh"
 
-export NVM_DIR="$HOME/.nvm"
-  [ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh"  # This loads nvm
-  [ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"
+export EDITOR="/bin/zsh $HOME/.config/nvim/nvim-launcher.sh"
+export VISUAL="$EDITOR"
+
+# mise: node/python/etc. versions (replaces nvm)
+eval "$(mise activate zsh)"
 
 # flutter
 export PATH=$HOME/dev/flutter/bin:$PATH
 
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
-
-. "/Users/johanneskrabbe/.deno/env"
-
 
 export PATH="$HOME/.config/scripts:$PATH"
 alias bs='branchstatus.sh'
@@ -40,9 +39,6 @@ alias nt='$HOME/.config/scripts/tmux/start-neotaste-monorepo.sh'
 # bun
 export BUN_INSTALL="$HOME/.bun"
 export PATH="$BUN_INSTALL/bin:$PATH"
-
-export PATH="$PATH:$(go env GOPATH)/bin"
-
 
 bindkey -v
 export KEYTIMEOUT=1
@@ -80,6 +76,9 @@ git() {
     fi
     command git "$@"
   }
-source <(COMPLETE=zsh slumber)
 
-export PATH="$HOME/.config/scripts/wt:$PATH"
+# opencode
+export PATH=/Users/johanneskrabbe/.opencode/bin:$PATH
+
+# Use the CLI profile without desktop app integrations.
+alias codex='codex --profile cli'
